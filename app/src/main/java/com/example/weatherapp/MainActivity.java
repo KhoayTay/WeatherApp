@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_main);
+        int firstTime = 0;
 
         homeRL = findViewById(R.id.idRLHome);
         loadPB = findViewById(R.id.idPBLoad);
@@ -86,9 +87,23 @@ public class MainActivity extends AppCompatActivity {
                     }, PERMISSON_CODE);
         }
 
-        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        cityName = getCity(location.getLongitude(), location.getLatitude());
-        getWeatherInfo(cityName);
+        if (firstTime == 0) {
+            cityName = "London";
+            getWeatherInfo(cityName);
+            firstTime = 1;
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            cityName = getCity(location.getLongitude(), location.getLatitude());
+            getWeatherInfo(cityName);
+        }
+//        if (location != null) {
+//            cityName = getCity(location.getLongitude(), location.getLatitude());
+//            getWeatherInfo(cityName);
+//        } else {
+//            cityName = "London";
+//            getWeatherInfo(cityName);
+//        }
+
 
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                     String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-                    Picasso.get().load("https:".concat(conditionIcon)).into(iconIV);
+                    Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
                     conditionTV.setText(condition);
 
                     int isDay = response.getJSONObject("current").getInt("is_day");
